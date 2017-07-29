@@ -23,8 +23,8 @@ $app->get('/', function () {
 
 
 $app->get('/wechat', function () {
-    $key = !isset($_GET['key'])?$_GET['key']:123;
-    $url = !isset($_GET['url'])?$_GET['url']:'http://www.baidu.com';
+    $key = isset($_GET['key'])?$_GET['key']:123;
+    $url = isset($_GET['url'])?$_GET['url']:'http://www.baidu.com';
     $cache = fileCache()->get('123');
     if($cache){
         var_dump($cache);
