@@ -1,0 +1,6 @@
+{
+  "require": {
+    "thenbsp/wechat": "*",
+    "simplesoftwareio/simple-qrcode": "~1"
+  }
+}
