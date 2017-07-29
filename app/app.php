@@ -15,12 +15,16 @@ $app->get('/', function () {
 
 $app->get('/wechat', function () {
     $wechat = new Services\Wechat();
-    $wechat->auth();
+    $wechat->auth(123,'www.baidu.com');
 
 });
 
 
+$app->get('/redirect', function () {
+    $wechat = new Services\Wechat();
+    var_dump($wechat->getAuth(123));
 
+});
 
 
 
