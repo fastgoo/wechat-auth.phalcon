@@ -11,14 +11,22 @@ namespace Services;
 use Thenbsp\Wechat\OAuth\Client;
 
 
+
 class Wechat
 {
+
+    private $config;
+
+    public function __construct()
+    {
+        $this->config = Phalcon\Di::getDefault()->get('wechat_config');
+    }
     /**
      * 微信授权登录
      */
     public function auth()
     {
-        $client = new Client('appid', 'appsecret');
+        $client = new Client($this->config->auth->app_id, $this->config->auth->secret);
         $client->setScope('snsapi_userinfo');
         $client->setRedirectUri('http://example.com/callback.php');
 

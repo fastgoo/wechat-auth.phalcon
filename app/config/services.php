@@ -11,6 +11,13 @@ $di->setShared('config', function () {
 });
 
 /**
+ * Shared configuration service
+ */
+$di->setShared('wechat_config', function () {
+    return include APP_PATH . "/config/wechat_config.php";
+});
+
+/**
  * Sets the view component
  */
 $di->setShared('view', function () {
