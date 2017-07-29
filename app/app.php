@@ -4,6 +4,15 @@
  * @var \Phalcon\Mvc\Micro $app
  */
 
+use Phalcon\Cache\Backend\File as BackFile;
+use Phalcon\Cache\Frontend\Data as FrontData;
+
+function fileCache()
+{
+    return new BackFile(new FrontData(["lifetime" => 300]), ["cacheDir" => BASE_PATH."/cache/"]);
+}
+
+
 /**
  * Add your routes here
  */
@@ -14,11 +23,14 @@ $app->get('/', function () {
 
 
 $app->get('/wechat', function () {
-    if($this['session']->has('wechatInfo')){
-        var_dump($this['session']->get('wechatInfo'));
+    $key = !isset($_GET['key'])?$_GET['key']:123;
+    $url = !isset($_GET['url'])?$_GET['url']:'http://www.baidu.com';
+    $cache = fileCache()->get('123');
+    if($cache){
+        var_dump($cache);
     }else{
         $wechat = new Services\WechatAuth();
-        $this['session']->set("wechatInfo", $wechat->auth());
+        fileCache()->save($key, ['redirectUrl'=>$url,'userInfo'=>$wechat->auth()]);
     }
 });
 
