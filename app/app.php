@@ -25,9 +25,9 @@ $app->get('/', function () {
 $app->get('/wechat', function () {
     $key = isset($_GET['key'])?$_GET['key']:123;
     $url = isset($_GET['url'])?$_GET['url']:'http://www.baidu.com';
-    $cache = fileCache()->get('123');
+    $cache = fileCache()->get($key);
     if($cache){
-        var_dump($cache);
+        echo $this['view']->render('index');
     }else{
         $wechat = new Services\WechatAuth();
         fileCache()->save($key, ['redirectUrl'=>$url,'userInfo'=>$wechat->auth()]);
