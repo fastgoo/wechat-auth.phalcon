@@ -35,14 +35,10 @@ class Wechat
             header('Location: ' . $client->getAuthorizeUrl());
         }
         $accessToken = $client->getAccessToken($_GET['code']);
-        var_dump($accessToken->toArray());
         $userinfo = $accessToken->getUser()->toArray();
 
-
-        $cache =  new BackFile(new FrontData(["lifetime" => 120]), ["cacheDir" => "../app/cache/"]);
-        //$robots = $cache->get($key);
-        $cache->save($key, ['redirectUrl'=>$url,'userInfo'=>$userinfo]);
-        exit;
+        $cache =  new BackFile(new FrontData(["lifetime" => 120]), ["cacheDir" => BASE_PATH."/cache/"]);
+        $cache->save($key, ['redirectUrl'=>$url,'userInfo'=>$userinfo,'accessToken'=>$accessToken->toArray()]);
     }
 
     /**
@@ -52,7 +48,7 @@ class Wechat
      */
     public function getAuth($key)
     {
-        $cache =  new BackFile(new FrontData(["lifetime" => 120]), ["cacheDir" => "../app/cache/"]);
+        $cache =  new BackFile(new FrontData(["lifetime" => 120]), ["cacheDir" => BASE_PATH."/cache/"]);
         return $cache->get($key);
     }
 }
