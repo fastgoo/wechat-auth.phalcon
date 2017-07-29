@@ -14,8 +14,8 @@ $app->get('/', function () {
 
 
 $app->get('/wechat', function () {
-    $wechat = new Services\Wechat();
-    $wechat->auth('123','www.baidu.com');
+    $wechat = new Services\WechatAuth();
+    var_dump($wechat->auth());
 
 });
 
