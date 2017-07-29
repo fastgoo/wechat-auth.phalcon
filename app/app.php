@@ -14,9 +14,12 @@ $app->get('/', function () {
 
 
 $app->get('/wechat', function () {
-    $wechat = new Services\WechatAuth();
-    var_dump($wechat->auth());
-
+    if($this['session']->has('wechatInfo')){
+        var_dump($this['session']->get('wechatInfo'));
+    }else{
+        $wechat = new Services\WechatAuth();
+        $this['session']->set("wechatInfo", $wechat->auth());
+    }
 });
 
 
