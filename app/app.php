@@ -30,7 +30,10 @@ $app->get('/wechat', function () {
         echo $this['view']->render('index');
     }else{
         $wechat = new Services\WechatAuth();
-        fileCache()->save($key, ['redirectUrl'=>$url,'userInfo'=>$wechat->auth()]);
+        $flag = fileCache()->save($key, ['redirectUrl'=>$url,'userInfo'=>$wechat->auth()]);
+        if($flag){
+            echo $this['view']->render('index');
+        }
     }
 });
 
