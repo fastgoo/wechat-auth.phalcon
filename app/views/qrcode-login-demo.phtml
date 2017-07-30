@@ -14,14 +14,16 @@
     <div class="page__hd">
         <br/>
         <p class="page__desc" style="text-align: center">二维码扫描跳转</p>
-        <div style="text-align: center"><embed width="320" height="320" id="qrcode" src="" type="image/svg+xml" /></div>
+        <div style="text-align: center">
+            <embed width="320" height="320" id="qrcode" src="" type="image/svg+xml"/>
+        </div>
 
     </div>
     <div class="page__bd">
         <div class="weui-cells weui-cells_form">
             <div class="weui-cell">
                 <div class="weui-cell__bd">
-                    <textarea class="weui-textarea" placeholder="请输入跳转的URL地址" rows="3"></textarea>
+                    <textarea id="redirectUrl" class="weui-textarea" placeholder="请输入跳转的URL地址" rows="3"></textarea>
                     <div class="weui-textarea-counter"><span>0</span>/200</div>
                 </div>
             </div>
@@ -31,35 +33,33 @@
 <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
 <script>
     $(function () {
+        var authKey;
         getQrcode();
-        $("#confirm").on("click",function () {
+        $("#confirm").on("click", function () {
             setAuth(1);
         });
 
-        $("#cancel").on("click",function () {
+        $("#cancel").on("click", function () {
             setAuth(0);
         });
 
-        function getQrcode(){
-            var key = parseInt(Math.random() * (999999 - 100000 + 1) + 100000);
-            $("#qrcode").attr('src',"https://wechat.zhoujianjun.cn/getQrcode?authKey="+key);
+        function getQrcode() {
+            authKey = parseInt(Math.random() * (999999 - 100000 + 1) + 100000);
+            $("#qrcode").attr('src', "https://wechat.zhoujianjun.cn/getQrcode?authKey=" + authKey);
         }
 
-        function setAuth(status) {
-            $.post('/setAuth',{authKey:$("#authKey").val(),status:status},function (res) {
-                if(res.code ==1){
-                    weui.toast(res.msg, {
-                        duration: 1500,
-                        className: 'custom-classname',
-                        callback: function(){
-                            WeixinJSBridge.call('closeWindow');
-                        }
-                    });
-                }else{
-                    weui.topTips(res.msg, 3000);
+        function getAuthStatus() {
+            $.post('/getAuth', {authKey: authKey}, function (res) {
+                if (res.code == 1) {
+                    location.herf = $("redirectUrl").text() + "&wechatToken=" + res.data.token;
                 }
-            },'json')
+                if (res.code == -1) {
+                    alert(res.msg);
+                }
+            }, 'json')
         }
+
+        window.setInterval(getAuthStatus, 2000);
     })
 </script>
 </body>
