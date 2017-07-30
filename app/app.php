@@ -102,7 +102,7 @@ $app->post('/setAuth', function () use ($cache) {
     $authCache['status'] = $status ? 1 : 2;
     $flag = $cache->save($key, $authCache);
     if ($flag) {
-        responseData(1, $status==1?'授权成功':'已取消');
+        responseData(1, $status?'授权成功':'已取消');
     } else {
         responseData(-1, '授权失败');
     }

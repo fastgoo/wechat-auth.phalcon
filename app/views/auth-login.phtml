@@ -13,7 +13,7 @@
     <div class="page">
         <div class="weui-msg">
             <input id="authKey" value="<?=$authKey;?>" type="hidden"/>
-            <div class="weui-msg__icon-area"><i class="weui-icon-success weui-icon_msg"></i></div>
+            <div class="weui-msg__icon-area"><i class="weui-icon-warn weui-icon_msg"></i></div>
             <div class="weui-msg__text-area">
                 <h2 class="weui-msg__title">确认登录</h2>
                 <p class="weui-msg__desc">即将登录<a href="javascript:void(0);">快捷行</a>，请确认是本人登录。如果非本人登录请取消操作</p>
@@ -49,8 +49,8 @@
         function setAuth(status) {
             $.post('/setAuth',{authKey:$("#authKey").val(),status:status},function (res) {
                 if(res.code ==1){
-                    weui.toast('登录成功', {
-                        duration: 3000,
+                    weui.toast(res.msg, {
+                        duration: 2000,
                         className: 'custom-classname',
                         callback: function(){
                             WeixinJSBridge.call('closeWindow');
