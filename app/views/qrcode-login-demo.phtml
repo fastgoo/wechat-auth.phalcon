@@ -34,6 +34,7 @@
 <script>
     $(function () {
         var authKey;
+        var taskId;
         getQrcode();
         function getQrcode() {
             authKey = parseInt(Math.random() * (999999 - 100000 + 1) + 100000);
@@ -45,18 +46,18 @@
             $.post('/getAuth', {authKey: authKey}, function (res) {
                 if (res.code == 1) {
                     location.herf = $("#redirectUrl").val() + "&wechatToken=" + res.data.token;
-                    return false;
+                    clearInterval(taskId);
                 }
                 if (res.code == -1 || res.code == -5) {
                     alert(res.msg);
-                    return false;
+                    clearInterval(taskId);
                 }
             }, 'json')
         }
 
         setTimeout(function () {
-            window.setInterval(getAuthStatus, 2000);
-        },10000);
+            taskId = window.setInterval(getAuthStatus, 3000);
+        },15000);
     })
 </script>
 </body>
