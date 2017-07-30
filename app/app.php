@@ -45,9 +45,9 @@ $app->get('/', function () {
  * 同时跳转页面到是否同意登录申请，同意则登录，不同意则取消
  */
 $app->get('/getQrcode', function () {
-    $key = !empty($_GET['authKey'])?$_GET['authKey']:123;
+    $key = !empty($_GET['authKey']) ? $_GET['authKey'] : 123;
     $qrcode = new SimpleSoftwareIO\QrCode\BaconQrCodeGenerator();
-    echo $qrcode->size(500)->generate('https://wechat.zhoujianjun.cn/authLogin?timestamp='.(time()+300).'&authKey='.$key);
+    echo $qrcode->size(500)->generate('https://wechat.zhoujianjun.cn/authLogin?timestamp=' . (time() + 300) . '&authKey=' . $key);
 });
 
 
@@ -63,7 +63,7 @@ $app->get('/authLogin', function () use ($cache) {
         $this['view']->error = '授权KEY获取失败';
         exit($this['view']->render('auth-login-error'));
     }
-    if($timestamp < time()){
+    if ($timestamp < time()) {
         $this['view']->error = '该二维码已失效，请重新二维码';
         exit($this['view']->render('auth-login-error'));
     }
@@ -72,13 +72,14 @@ $app->get('/authLogin', function () use ($cache) {
         $wechat = new Services\WechatAuth();
         $wechatInfo = ['userInfo' => $wechat->auth(), 'status' => 0];
         $cache->save($key, $wechatInfo);
-    }else{
-        if($wechatInfo['status']){
+    } else {
+        if ($wechatInfo['status']) {
             $this['view']->error = '该二维码已失效，请重新二维码';
             exit($this['view']->render('auth-login-error'));
         }
     }
     $this->session->set('openid', $wechatInfo['userInfo']->openid);
+    $this['view']->authKey = $key;
     echo $this['view']->render('auth-login');
 });
 
@@ -87,6 +88,7 @@ $app->get('/authLogin', function () use ($cache) {
  */
 $app->post('/setAuth', function () use ($cache) {
     $key = !empty($_POST['authKey']) ? $_POST['authKey'] : '';
+    $status = !empty($_POST['status']) ? $_POST['status'] : '';
     if (empty($key)) {
         responseData(-1, '授权key不能为空');
     }
@@ -97,10 +99,10 @@ $app->post('/setAuth', function () use ($cache) {
     if ($this->session->get('openid') != $authCache['userInfo']->openid) {
         responseData(-1, '不可操作其他用户的数据');
     }
-    $authCache['status'] = 1;
+    $authCache['status'] = $status ? 1 : 2;
     $flag = $cache->save($key, $authCache);
     if ($flag) {
-        responseData(1, '授权成功');
+        responseData(1, $status?'授权成功':'已取消');
     } else {
         responseData(-1, '授权失败');
     }
@@ -122,8 +124,6 @@ $app->post('/getAuth', function () use ($cache) {
     $token = \Services\JwtAuth::type()->encode($authCache['userInfo']);
     responseData(1, '授权成功', compact('token'));
 });
-
-
 
 
 /**
