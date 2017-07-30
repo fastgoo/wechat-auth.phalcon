@@ -40,14 +40,13 @@ $app->get('/', function () {
  */
 $app->get('/authLogin', function () use ($cache) {
     $key = !empty($_GET['authKey']) ? $_GET['authKey'] : '';
-    $url = !empty($_GET['redirectUrl']) ? $_GET['redirectUrl'] : '';
-    if (empty($key) || empty($url)) {
-        $this['view']->error = empty($key) ? '授权KEY' : '回调地址';
+    if (empty($key)) {
+        $this['view']->error = '授权KEY';
         exit($this['view']->render('auth-login-error'));
     }
     if (!($cache->get($key))) {
         $wechat = new Services\WechatAuth();
-        $cache->save($key, ['redirectUrl' => $url, 'userInfo' => $wechat->auth(), 'status' => 0]);
+        $cache->save($key, ['userInfo' => $wechat->auth(), 'status' => 0]);
     }
     echo $this['view']->render('auth-login');
 });
@@ -108,12 +107,7 @@ $app->get('/authWeb', function () use ($cache) {
     } else {
         $url = $url . '?sign' . base64_encode(json_encode($userInfo));
     }
-    \Phalcon\Di::getDefault()->getResponse()->redirect($url, true);
-});
-
-
-$app->get('/redirect', function () use ($app) {
-    echo $app['view']->render('404');
+    header("Location:".$url);
 });
 
 
