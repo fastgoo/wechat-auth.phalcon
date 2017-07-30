@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <meta charset=UTF-8>
+    <meta http-equiv=X-UA-Compatible content="IE=edge,chrome=1">
+    <meta name=viewport content="width=device-width,user-scalable=no,initial-scale=1,maximum-scale=1,minimum-scale=1">
+    <meta name=description content="">
+    <meta name=keywords content="">
+    <link rel="stylesheet" href="https://res.wx.qq.com/open/libs/weui/1.1.0/weui.min.css">
+    <script type="text/javascript" src="https://res.wx.qq.com/open/libs/weuijs/1.1.1/weui.min.js"></script>
+    <title>微信登录</title>
+    <script>!function (n, e) {
+        var t = n.documentElement, i = "orientationchange" in window ? "orientationchange" : "resize", d = function () {
+            var n = t.clientWidth;
+            n && (t.style.fontSize = n > 640 ? "24px" : n / 320 * 14 + "px")
+        };
+        n.addEventListener && (e.addEventListener(i, d, !1), n.addEventListener("DOMContentLoaded", d, !1))
+    }(document, window)</script>
+    <style>
+        html{font-size:12px;-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%;-webkit-tap-highlight-color:rgba(0,0,0,0)}@media (min-width:320px){html{font-size:14px}}@media (min-width:360px){html{font-size:16px}}@media (min-width:400px){html{font-size:18px}}@media (min-width:440px){html{font-size:20px}}@media (min-width:480px){html{font-size:22px}}@media (min-width:640px){html{font-size:24px}}body{line-height:1.4;font-size:1rem;color:#333;font-family:Helvetica Neue,Helvetica,Arial,sans-serif}*{margin:0;padding:0}*,:after,:before{box-sizing:border-box}a img{border:0}li,ul{list-style:none}body,html{height:100%;-webkit-overflow-scrolling:touch}body{padding:0 1.714286rem}.top-logo{padding-top:2.857143rem;padding-bottom:2.142857rem;text-align:center;border-bottom:1px solid rgba(0,0,0,.05)}.top-logo h3{font-size:1.285714rem;font-weight:400}.prompt-text{padding:2.142857rem 0;font-size:1rem}.prompt-text .txt1{display:inline-block;color:#666;font-size:.857143rem;margin-top:1.142857rem;margin-left:.357143rem}.prompt-text .txt1 .dot{display:inline-block;width:4px;height:4px;border-radius:50%;background-color:#666;margin-right:.714286rem;vertical-align:middle}.btn-cancel,.btn-sure{width:100%;height:2.571429rem;text-align:center;outline:0;-webkit-appearance:none;appearance:none;border:none;font-size:1.142857rem;border-radius:5px}.btn-cancel:active,.btn-cancel:hover,.btn-sure:active,.btn-sure:hover{opacity:.7}.btn-sure{color:#fff;background-color:#1aad19;margin-bottom:1.142857rem}.btn-cancel{position:relative;color:#333;background-color:#f7f7f7}.btn-cancel:after{content:" ";width:200%;height:200%;position:absolute;top:0;left:0;border:1px solid #aaa;-webkit-transform:scale(.5);transform:scale(.5);-webkit-transform-origin:0 0;transform-origin:0 0;border-radius:10px}
+    </style>
+</head>
+<body>
+<div class=top-logo>
+    <input id="authKey" value="<?=$authKey;?>" type="hidden"/>
+    <img src="/img/login-logo.png" alt=快捷行软件 width="35%">
+    <h3>快捷行软件</h3></div>
+<div class=prompt-text>即将登录快捷行软件，请确认是本人操作 <span class=txt1><span class=dot></span>使用你的账号登录该应用</span></div>
+<div class=operator>
+    <button type=button id="confirm"  class=btn-sure>确认登录</button>
+    <button type=button id="cancel"  class=btn-cancel>取消</button>
+</div>
+<script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+<script>
+    $(function () {
+        $("#confirm").on("click",function () {
+            setAuth(1);
+        });
+
+        $("#cancel").on("click",function () {
+            setAuth(0);
+        });
+
+        function setAuth(status) {
+            $.post('/setAuth',{authKey:$("#authKey").val(),status:status},function (res) {
+                if(res.code ==1){
+                    weui.toast(res.msg, {
+                        duration: 1500,
+                        className: 'custom-classname',
+                        callback: function(){
+                            WeixinJSBridge.call('closeWindow');
+                        }
+                    });
+                }else{
+                    weui.topTips(res.msg, 3000);
+                }
+            },'json')
+        }
+    })
+</script>
+</body>
+</html>
