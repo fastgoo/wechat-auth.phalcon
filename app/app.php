@@ -102,12 +102,24 @@ $app->get('/authWeb', function () use ($cache) {
     $wechat = new Services\WechatAuth();
     $userInfo = $wechat->auth();
     $checkParam = strpos($url, '?');
+    $strCode = new Services\StrCode();
     if ($checkParam) {
-        $url = $url . '&sign=' . base64_encode(json_encode($userInfo));
+        $url = $url . '&wechatSign=' . $strCode->auth(json_encode($userInfo),'ENCODE');
     } else {
-        $url = $url . '?sign=' . base64_encode(json_encode($userInfo));
+        $url = $url . '?wechatSsign=' . $strCode->auth(json_encode($userInfo),'ENCODE');
     }
     header("Location:".$url);
+});
+
+
+/**
+ * 微信web公众号授权
+ * 授权获取用户信息，直接跳转到改用户设置的回调地址上同时带上用户信息
+ */
+$app->get('/getUser', function () use ($cache) {
+    $strCode = new Services\StrCode();
+    $ret = $strCode->auth($_GET['wechatSign'], 'DECODE').'<br>';
+    print_r(json_decode($ret,true));
 });
 
 
