@@ -102,11 +102,10 @@ $app->get('/authWeb', function () use ($cache) {
     $wechat = new Services\WechatAuth();
     $userInfo = $wechat->auth();
     $checkParam = strpos($url, '?');
-    $strCode = new Services\StrCode();
     if ($checkParam) {
-        $url = $url . '&wechatSign=' . urlencode($strCode->auth(json_encode($userInfo),'ENCODE'));
+        $url = $url . '&wechatToken=' . \Services\JwtAuth::type()->encode($userInfo);
     } else {
-        $url = $url . '?wechatSign=' . urlencode($strCode->auth(json_encode($userInfo),'ENCODE'));
+        $url = $url . '?wechatToken=' . \Services\JwtAuth::type()->encode($userInfo);
     }
     header("Location:".$url);
 });
@@ -117,9 +116,8 @@ $app->get('/authWeb', function () use ($cache) {
  * 授权获取用户信息，直接跳转到改用户设置的回调地址上同时带上用户信息
  */
 $app->get('/getUser', function () use ($cache) {
-    $strCode = new Services\StrCode();
-    $ret = $strCode->auth(urldecode($_GET['wechatSign']), 'DECODE').'<br>';
-    print_r(json_decode($ret,true));
+    $userI = \Services\JwtAuth::type()->decode($_GET['wechatToken']);
+    var_dump($userI,111111);
 });
 
 

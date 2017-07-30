@@ -1,6 +1,7 @@
 {
   "require": {
     "thenbsp/wechat": "*",
-    "simplesoftwareio/simple-qrcode": "~1"
+    "simplesoftwareio/simple-qrcode": "~1",
+    "firebase/php-jwt": "*"
   }
 }

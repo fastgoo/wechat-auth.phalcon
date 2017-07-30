@@ -16,7 +16,7 @@ class WechatAuth
 
     public function __construct($param = array())
     {
-        $config = Di::getDefault()->get("wechat_config")->auth;
+        $config = Di::getDefault()->get("commonConfig")->wechat_auth;
         $this->appId = $config->app_id;
         $this->appSecret = $config->secret;
     }

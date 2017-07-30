@@ -23,8 +23,8 @@ $di->setShared('config', function () {
 /**
  * Shared configuration service
  */
-$di->setShared('wechat_config', function () {
-    return include APP_PATH . "/config/wechat_config.php";
+$di->setShared('commonConfig', function () {
+    return include APP_PATH . "/config/common.php";
 });
 
 /**
