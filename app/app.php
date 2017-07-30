@@ -104,9 +104,9 @@ $app->get('/authWeb', function () use ($cache) {
     $checkParam = strpos($url, '?');
     $strCode = new Services\StrCode();
     if ($checkParam) {
-        $url = $url . '&wechatSign=' . $strCode->auth(json_encode($userInfo),'ENCODE');
+        $url = $url . '&wechatSign=' . base64_encode($strCode->auth(json_encode($userInfo),'ENCODE'));
     } else {
-        $url = $url . '?wechatSign=' . $strCode->auth(json_encode($userInfo),'ENCODE');
+        $url = $url . '?wechatSign=' . base64_encode($strCode->auth(json_encode($userInfo),'ENCODE'));
     }
     header("Location:".$url);
 });
@@ -118,7 +118,7 @@ $app->get('/authWeb', function () use ($cache) {
  */
 $app->get('/getUser', function () use ($cache) {
     $strCode = new Services\StrCode();
-    $ret = $strCode->auth($_GET['wechatSign'], 'DECODE').'<br>';
+    $ret = $strCode->auth(base64_decode($_GET['wechatSign']), 'DECODE').'<br>';
     print_r(json_decode($ret,true));
 });
 
