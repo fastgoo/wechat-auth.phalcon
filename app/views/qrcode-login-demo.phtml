@@ -53,7 +53,7 @@
                 if (res.code == 1) {
                     location.herf = $("redirectUrl").text() + "&wechatToken=" + res.data.token;
                 }
-                if (res.code == -1) {
+                if (res.code == -1 || res.code == -5) {
                     alert(res.msg);
                 }
             }, 'json')
