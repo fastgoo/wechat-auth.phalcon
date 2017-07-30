@@ -73,7 +73,7 @@ $app->get('/authLogin', function () use ($cache) {
         $wechatInfo = ['userInfo' => $wechat->auth(), 'status' => 0];
         $cache->save($key, $wechatInfo);
     } else {
-        if ($wechatInfo['status']) {
+        if ($wechatInfo['status'] == 1) {
             $this['view']->error = '该二维码已失效，请重新二维码';
             exit($this['view']->render('auth-login-error'));
         }
