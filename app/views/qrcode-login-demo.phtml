@@ -45,7 +45,7 @@
             console.log($("#redirectUrl").val());
             $.post('/getAuth', {authKey: authKey}, function (res) {
                 if (res.code == 1) {
-                    location.herf = $("#redirectUrl").val() + "&wechatToken=" + res.data.token;
+                    location.href = $("#redirectUrl").val() + "&wechatToken=" + res.data.token;
                     clearInterval(taskId);
                 }
                 if (res.code == -1 || res.code == -5) {
@@ -57,7 +57,7 @@
 
         setTimeout(function () {
             taskId = window.setInterval(getAuthStatus, 3000);
-        },15000);
+        },12000);
     })
 </script>
 </body>
