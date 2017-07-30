@@ -102,7 +102,7 @@ $app->post('/setAuth', function () use ($cache) {
     $authCache['status'] = $status ? 1 : 2;
     $flag = $cache->save($key, $authCache);
     if ($flag) {
-        responseData(1, $status?'授权成功':'已取消');
+        responseData(1, $status==1?'授权成功':'已取消');
     } else {
         responseData(-1, '授权失败');
     }
@@ -120,6 +120,9 @@ $app->post('/getAuth', function () use ($cache) {
     $authCache = $cache->get($key);
     if (!$authCache || empty($authCache['status'])) {
         responseData(-2, '该用户未微信授权，请重新授权登录');
+    }
+    if ($authCache['status'] == 2) {
+        responseData(-5, '该用户已取消登录');
     }
     $token = \Services\JwtAuth::type()->encode($authCache['userInfo']);
     responseData(1, '授权成功', compact('token'));
