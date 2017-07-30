@@ -171,7 +171,6 @@ $app->get('/getUser', function () use ($cache) {
  * 二维码登录demo
  */
 $app->get('/qrcodeDemo',function (){
-    //$this['view']->authKey = 123;
     echo $this['view']->render('qrcode-login-demo');
 });
 
