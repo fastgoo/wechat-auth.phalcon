@@ -35,23 +35,16 @@
     $(function () {
         var authKey;
         getQrcode();
-        $("#confirm").on("click", function () {
-            setAuth(1);
-        });
-
-        $("#cancel").on("click", function () {
-            setAuth(0);
-        });
-
         function getQrcode() {
             authKey = parseInt(Math.random() * (999999 - 100000 + 1) + 100000);
             $("#qrcode").attr('src', "https://wechat.zhoujianjun.cn/getQrcode?authKey=" + authKey);
         }
 
         function getAuthStatus() {
+            console.log($("#redirectUrl").text());
             $.post('/getAuth', {authKey: authKey}, function (res) {
                 if (res.code == 1) {
-                    location.herf = $("redirectUrl").text() + "&wechatToken=" + res.data.token;
+                    location.herf = $("#redirectUrl").text() + "&wechatToken=" + res.data.token;
                 }
                 if (res.code == -1 || res.code == -5) {
                     alert(res.msg);
