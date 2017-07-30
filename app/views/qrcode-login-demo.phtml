@@ -41,10 +41,10 @@
         }
 
         function getAuthStatus() {
-            console.log($("#redirectUrl").text());
+            console.log($("#redirectUrl").val());
             $.post('/getAuth', {authKey: authKey}, function (res) {
                 if (res.code == 1) {
-                    location.herf = $("#redirectUrl").text() + "&wechatToken=" + res.data.token;
+                    location.herf = $("#redirectUrl").val() + "&wechatToken=" + res.data.token;
                 }
                 if (res.code == -1 || res.code == -5) {
                     alert(res.msg);
@@ -52,7 +52,9 @@
             }, 'json')
         }
 
-        window.setInterval(getAuthStatus, 2000);
+        setTimeout(function () {
+            window.setInterval(getAuthStatus, 2000);
+        },10000);
     })
 </script>
 </body>
