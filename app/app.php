@@ -103,9 +103,9 @@ $app->get('/authWeb', function () use ($cache) {
     $userInfo = $wechat->auth();
     $checkParam = strpos($url, '?');
     if ($checkParam) {
-        $url = $url . '&sign' . base64_encode(json_encode($userInfo));
+        $url = $url . '&sign=' . base64_encode(json_encode($userInfo));
     } else {
-        $url = $url . '?sign' . base64_encode(json_encode($userInfo));
+        $url = $url . '?sign=' . base64_encode(json_encode($userInfo));
     }
     header("Location:".$url);
 });
