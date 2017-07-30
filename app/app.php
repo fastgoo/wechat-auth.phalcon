@@ -106,7 +106,7 @@ $app->get('/authWeb', function () use ($cache) {
     if ($checkParam) {
         $url = $url . '&wechatSign=' . $strCode->auth(json_encode($userInfo),'ENCODE');
     } else {
-        $url = $url . '?wechatSsign=' . $strCode->auth(json_encode($userInfo),'ENCODE');
+        $url = $url . '?wechatSign=' . $strCode->auth(json_encode($userInfo),'ENCODE');
     }
     header("Location:".$url);
 });
