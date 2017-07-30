@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://res.wx.qq.com/open/libs/weui/1.1.0/weui.min.css">
+    <script type="text/javascript" src="https://res.wx.qq.com/open/libs/weuijs/1.1.1/weui.min.js"></script>
+    <title>授权登录</title>
+</head>
+<body>
+
+<div class="page">
+    <div class="page__hd">
+        <br/>
+        <p class="page__desc" style="text-align: center">重定向跳转</p>
+        <br>
+    </div>
+    <div class="page__bd">
+        <div class="weui-cells">
+            <div class="weui-cell">
+                <div class="weui-cell__bd">
+                    <input class="weui-input" type="text" id="url" placeholder="请输入文本"/>
+                </div>
+            </div>
+        </div>
+        <br>
+        <div class="weui-btn-area">
+            <a class="weui-btn weui-btn_primary" href="javascript:" onclick="redirectUrl()">点击跳转</a>
+        </div>
+    </div>
+</div>
+<script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+<script>
+    function redirectUrl() {
+        location.href="https://wechat.zhoujianjun.cn/authWeb?redirectUrl="+$("#url").val();
+    }
+</script>
+</body>
+</html>

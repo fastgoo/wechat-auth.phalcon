@@ -141,7 +141,7 @@ $app->post('/getAuth', function () use ($cache) {
 $app->get('/authWeb', function () use ($cache) {
     $url = !empty($_GET['redirectUrl']) ? $_GET['redirectUrl'] : '';
     if (empty($url)) {
-        $this['view']->error = '回调地址';
+        $this['view']->error = '回调地址异常';
         exit($this['view']->render('auth-login-error'));
     }
     $wechat = new Services\WechatAuth();
@@ -175,6 +175,12 @@ $app->get('/qrcodeDemo',function (){
     echo $this['view']->render('qrcode-login-demo');
 });
 
+/**
+ * 重定向登录demo
+ */
+$app->get('/redirectDemo',function (){
+    echo $this['view']->render('auth-redirect-demo');
+});
 
 /**
  * Not found handler
