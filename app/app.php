@@ -32,6 +32,24 @@ $app->get('/', function () {
     echo $this['view']->render('index');
 });
 
+/**
+ * TODO ===========================   微信扫码登录   ============================================
+ */
+
+/**
+ * 获取登录二维码
+ */
+/**
+ * 微信扫码授权
+ * 授权数据存入缓存
+ * 同时跳转页面到是否同意登录申请，同意则登录，不同意则取消
+ */
+$app->get('/getQrcode', function () {
+    $key = !empty($_GET['authKey'])?$_GET['authKey']:123;
+    $qrcode = new SimpleSoftwareIO\QrCode\BaconQrCodeGenerator();
+    echo $qrcode->size(500)->generate('https://wechat.zhoujianjun.cn/authLogin?timestamp='.(time()+300).'&authKey='.$key);
+});
+
 
 /**
  * 微信扫码授权
@@ -40,14 +58,27 @@ $app->get('/', function () {
  */
 $app->get('/authLogin', function () use ($cache) {
     $key = !empty($_GET['authKey']) ? $_GET['authKey'] : '';
+    $timestamp = !empty($_GET['timestamp']) ? $_GET['timestamp'] : '';
     if (empty($key)) {
-        $this['view']->error = '授权KEY';
+        $this['view']->error = '授权KEY获取失败';
         exit($this['view']->render('auth-login-error'));
     }
-    if (!($cache->get($key))) {
-        $wechat = new Services\WechatAuth();
-        $cache->save($key, ['userInfo' => $wechat->auth(), 'status' => 0]);
+    if($timestamp < time()){
+        $this['view']->error = '该二维码已失效，请重新二维码';
+        exit($this['view']->render('auth-login-error'));
     }
+    $wechatInfo = $cache->get($key);
+    if (!$wechatInfo) {
+        $wechat = new Services\WechatAuth();
+        $wechatInfo = ['userInfo' => $wechat->auth(), 'status' => 0];
+        $cache->save($key, $wechatInfo);
+    }else{
+        if($wechatInfo['status']){
+            $this['view']->error = '该二维码已失效，请重新二维码';
+            exit($this['view']->render('auth-login-error'));
+        }
+    }
+    $this->session->set('openid', $wechatInfo['userInfo']->openid);
     echo $this['view']->render('auth-login');
 });
 
@@ -63,12 +94,15 @@ $app->post('/setAuth', function () use ($cache) {
     if (!$authCache) {
         responseData(-100, '该用户未微信授权，请重新授权登录');
     }
+    if ($this->session->get('openid') != $authCache['userInfo']->openid) {
+        responseData(-1, '不可操作其他用户的数据');
+    }
     $authCache['status'] = 1;
     $flag = $cache->save($key, $authCache);
     if ($flag) {
         responseData(1, '授权成功');
     } else {
-        responseData(1, '授权失败');
+        responseData(-1, '授权失败');
     }
 });
 
@@ -85,9 +119,16 @@ $app->post('/getAuth', function () use ($cache) {
     if (!$authCache || empty($authCache['status'])) {
         responseData(-2, '该用户未微信授权，请重新授权登录');
     }
-    responseData(1, '授权成功', $authCache);
+    $token = \Services\JwtAuth::type()->encode($authCache['userInfo']);
+    responseData(1, '授权成功', compact('token'));
 });
 
+
+
+
+/**
+ * TODO ===========================   微信公众号重定向授权登录   ============================================
+ */
 
 /**
  * 微信web公众号授权
@@ -101,13 +142,14 @@ $app->get('/authWeb', function () use ($cache) {
     }
     $wechat = new Services\WechatAuth();
     $userInfo = $wechat->auth();
+    $userInfo->expire_time = time() + 300;
     $checkParam = strpos($url, '?');
     if ($checkParam) {
         $url = $url . '&wechatToken=' . \Services\JwtAuth::type()->encode($userInfo);
     } else {
         $url = $url . '?wechatToken=' . \Services\JwtAuth::type()->encode($userInfo);
     }
-    header("Location:".$url);
+    header("Location:" . $url);
 });
 
 
@@ -117,7 +159,7 @@ $app->get('/authWeb', function () use ($cache) {
  */
 $app->get('/getUser', function () use ($cache) {
     $userI = \Services\JwtAuth::type()->decode($_GET['wechatToken']);
-    var_dump($userI,111111);
+    var_dump($userI, 111111);
 });
 
 
