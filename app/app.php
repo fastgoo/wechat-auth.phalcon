@@ -47,7 +47,8 @@ $app->get('/', function () {
 $app->get('/getQrcode', function () {
     $key = !empty($_GET['authKey']) ? $_GET['authKey'] : 123;
     $qrcode = new SimpleSoftwareIO\QrCode\BaconQrCodeGenerator();
-    echo $qrcode->size(500)->generate('https://wechat.zhoujianjun.cn/authLogin?timestamp=' . (time() + 300) . '&authKey=' . $key);
+    $qrcodeEn = $qrcode->size(300)->generate('https://wechat.zhoujianjun.cn/authLogin?timestamp=' . (time() + 300) . '&authKey=' . $key);
+    echo $qrcodeEn;
 });
 
 
@@ -163,6 +164,15 @@ $app->get('/authWeb', function () use ($cache) {
 $app->get('/getUser', function () use ($cache) {
     $userI = \Services\JwtAuth::type()->decode($_GET['wechatToken']);
     var_dump($userI, 111111);
+});
+
+
+/**
+ * 二维码登录demo
+ */
+$app->get('/qrcodeDemo',function (){
+    //$this['view']->authKey = 123;
+    echo $this['view']->render('qrcode-login-demo');
 });
 
 
