@@ -11,7 +11,7 @@
 [中文扩展安装](http://www.iphalcon.cn/reference/install.html)
 
 ```bash
-git clone https://github.com/jungege520/simple.phalcon.git phalcon
+git clone https://github.com/jungege520/wechat-auth.phalcon.git wechat-auth
 cd phalcon
 composer install
 ```
