@@ -7,6 +7,10 @@
 use Phalcon\Cache\Backend\File as BackFile;
 use Phalcon\Cache\Frontend\Data as FrontData;
 
+header('Access-Control-Allow-Origin: *');
+header("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, Authorization");
+header('Access-Control-Allow-Methods: GET, POST, PUT,DELETE');
+
 /**
  * 初始化缓存设置
  */
@@ -115,9 +119,11 @@ $app->post('/setAuth', function () use ($cache) {
  */
 $app->map('/getAuth', function () use ($cache) {
     $request = new \Phalcon\Http\Request();
-
+    if($request->isOptions()){
+        responseData(-1, '快速返回跨域信息');
+    }
     $key = !empty($_POST['authKey']) ? $_POST['authKey'] : '';
-    //$key = !empty($_GET['authKey'])?$_GET['authKey']:$key;
+    $key = !empty($_GET['authKey'])?$_GET['authKey']:$key;
     if (empty($key)) {
         responseData(-1, '授权key不能为空');
     }
