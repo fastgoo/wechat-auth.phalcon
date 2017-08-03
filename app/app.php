@@ -118,9 +118,12 @@ $app->post('/setAuth', function () use ($cache) {
  * 如果用户已授权则返回对应的缓存数据
  */
 $app->map('/getAuth', function () use ($cache) {
-
+    $request = new \Phalcon\Http\Request();
+    if($request->isOptions()){
+        responseData(-1, '快速返回跨域信息');
+    }
     $key = !empty($_POST['authKey']) ? $_POST['authKey'] : '';
-    $key = !empty($_GET['authKey'])?$_GET['authKey']:$key;
+    //$key = !empty($_GET['authKey'])?$_GET['authKey']:$key;
     if (empty($key)) {
         responseData(-1, '授权key不能为空');
     }
