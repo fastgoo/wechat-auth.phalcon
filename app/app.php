@@ -7,6 +7,10 @@
 use Phalcon\Cache\Backend\File as BackFile;
 use Phalcon\Cache\Frontend\Data as FrontData;
 
+header('Access-Control-Allow-Origin: *');
+header("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, Authorization");
+header('Access-Control-Allow-Methods: GET, POST, PUT,DELETE');
+
 /**
  * 初始化缓存设置
  */
@@ -113,8 +117,10 @@ $app->post('/setAuth', function () use ($cache) {
  * 获取认证授权状态
  * 如果用户已授权则返回对应的缓存数据
  */
-$app->post('/getAuth', function () use ($cache) {
+$app->map('/getAuth', function () use ($cache) {
+
     $key = !empty($_POST['authKey']) ? $_POST['authKey'] : '';
+    $key = !empty($_GET['authKey'])?$_GET['authKey']:$key;
     if (empty($key)) {
         responseData(-1, '授权key不能为空');
     }
@@ -146,7 +152,7 @@ $app->get('/authWeb', function () use ($cache) {
     }
     $wechat = new Services\WechatAuth();
     $userInfo = $wechat->auth();
-    $userInfo->expire_time = time() + 300;
+    $userInfo->expire_time = time() + 60;
     $checkParam = strpos($url, '?');
     if ($checkParam) {
         $url = $url . '&wechatToken=' . \Services\JwtAuth::type()->encode($userInfo);
